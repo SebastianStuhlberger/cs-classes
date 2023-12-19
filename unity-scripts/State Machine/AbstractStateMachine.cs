@@ -9,7 +9,7 @@ using UnityEngine;
 
 /// <summary>
 /// This StateMachine is designed to operate based on C# types instead of enums or state-objects.
-/// It is also Monobehaviour, so you can set member fields in the Editor.
+/// It is also a Monobehaviour, so you can set member fields in the Editor.
 /// </summary>
 /// <typeparam name="StateSubGroup">The subgroup class for a StateMachine and its related States.
 /// Use these subgroups to group states that belong together.</typeparam>

@@ -1,0 +1,9 @@
+/self-contained-classes/State Machine/bin
+/self-contained-classes/State Machine/obj
+*.csproj
+*.sln
+bin
+Bin
+obj
+Obj
+.vscode
