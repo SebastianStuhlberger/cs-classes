@@ -2,7 +2,8 @@
 /* Code by Sebastian Stuhlberger                                             */
 /* ========================================================================= */
 
-namespace StateMachine {
+namespace StateMachine
+{
 
     // declare a subgroup for states and their StateMachine
     class DemoStateMachine : AbstractStateMachine<DemoStateSubgroup>
@@ -14,5 +15,5 @@ namespace StateMachine {
             AddState<DemoStateB>();
         }
     }
-    
+
 }

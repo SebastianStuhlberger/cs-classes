@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace StateMachine
 {
@@ -17,26 +16,32 @@ namespace StateMachine
     /// Use these subgroups to group states that belong together.</typeparam>
     abstract class AbstractStateMachine<StateSubGroup> where StateSubGroup : AbstractStateSubgroup
     {
-        // all states that are currently held by the StateMachine
-        private List<AbstractState<StateSubGroup>> _storedStates;
+        private List<AbstractState<StateSubGroup>> _storedStates = new();
 
         private AbstractState<StateSubGroup> _currentState;
+        private AbstractState<StateSubGroup> _requestedState = null;
 
-        // note that a value of "-1" means "no new state requested"
-        // this behaviour could be replaced by a bool, if so desired
-        private int _requestedStateIndex = -1;
+        private bool IsStateChangeRequested { get => _requestedState != null; }
+        private bool StateChangeRequestIsRedundant { get => _requestedState == _currentState; }
 
         /// <summary>
-        /// Returns a list of all held states.
-        /// Don't overuse this to keep List creations low.
+        /// Check, if the currently active state is of a specific type.
         /// </summary>
-        public List<Type> StoredStates { get => _storedStates.Select(obj => obj.GetType()).ToList(); private set {; } }
-
-        public Type CurrentState { get => _currentState.GetType(); private set {; } }
-
-        protected AbstractStateMachine()
+        /// <typeparam name="T">The type of state to check the current state against.</typeparam>
+        /// <returns>True, if the current state is of the specified type.</returns>
+        public bool CurrentStateIs<T>() where T : AbstractState<StateSubGroup>
         {
-            _storedStates = new List<AbstractState<StateSubGroup>>();
+            return _currentState is T;
+        }
+
+        /// <summary>
+        /// Check, if the state-machine holds an instance of a specific state type.
+        /// </summary>
+        /// <typeparam name="T">The type of state to check the held states against.</typeparam>
+        /// <returns>True, if the state-machine holds an instance of the specified type.</returns>
+        public bool HasStateStored<T>() where T : AbstractState<StateSubGroup>
+        {
+            return FindStoredState<T>();
         }
 
         /// <summary>
@@ -47,7 +52,7 @@ namespace StateMachine
         {
             // switch to another state, if it was requested last frame
             HandleStateRequests();
-            
+
             // exhibit state-specific update behaviour
             _currentState.OnUpdate();
         }
@@ -58,28 +63,38 @@ namespace StateMachine
         /// </summary>
         public void Initialize()
         {
-            // validate state setup
+            ValidateDefaultStates();
+            SetInitialState();
+        }
+
+        private void ValidateDefaultStates()
+        {
             if (_storedStates.Count < 1)
             {
-                throw new Exception("ConcreteStateMachine does not add any states");
+                throw new Exception("ConcreteStateMachine does not add any default states in its constructor");
             }
-            else
-            {
-                _currentState = _storedStates[0];
-                _currentState.OnEnter();
-            }
+        }
+
+        private void SetInitialState()
+        {
+            _currentState = _storedStates[0];
+            _currentState.OnEnter();
         }
 
         private void HandleStateRequests()
         {
-            // only switch, if there was actually a state requested
-            if (_requestedStateIndex != -1)
+            if (IsStateChangeRequested)
             {
-                _currentState.OnExit();
-                _currentState = _storedStates[_requestedStateIndex];
-                _currentState.OnEnter();
+                if (StateChangeRequestIsRedundant)
+                {
+                    _requestedState = null;
+                    return;
+                }
 
-                _requestedStateIndex = -1;
+                _currentState.OnExit();
+                _currentState = _requestedState;
+                _requestedState = null;
+                _currentState.OnEnter();
             }
         }
 
@@ -90,13 +105,15 @@ namespace StateMachine
         /// <typeparam name="T">The concrete Type of the desired State you wish to add.</typeparam>
         protected void AddState<T>() where T : AbstractState<StateSubGroup>, new()
         {
-            if (FindStateIndex<T>(out int index))
+            if (FindStoredState<T>())
             {
                 throw new Exception("State type already stored, cannot add another.");
             }
 
             var newState = new T();
-            newState.stateMachine = this;
+            // Inform the State, which StateMachine it belongs to.
+            // This step is vital, so include it in all "AddState()" overloads.
+            newState.StateMachine = this;
 
             _storedStates.Add(newState);
         }
@@ -108,23 +125,23 @@ namespace StateMachine
         /// <param name="state">An Instance of the State you wish to add.</param>
         protected void AddState<T>(T state) where T : AbstractState<StateSubGroup>
         {
-            if (FindStateIndex<T>(out int index))
+            if (FindStoredState<T>(out var storedState))
             {
                 throw new Exception("State type already stored, cannot add another.");
             }
 
             // Inform the State, which StateMachine it belongs to.
-            // This step is vital, so include it in any other "AddState()" overloads.
-            state.stateMachine = this;
+            // This step is vital, so include it in all "AddState()" overloads.
+            state.StateMachine = this;
 
             _storedStates.Add(state);
         }
 
         protected void RemoveState<T>() where T : AbstractState<StateSubGroup>
         {
-            if (FindStateIndex<T>(out int index))
+            if (FindStoredState<T>(out var state))
             {
-                _storedStates.RemoveAt(index);
+                _storedStates.Remove(state);
             }
             else
             {
@@ -139,9 +156,9 @@ namespace StateMachine
         /// <typeparam name="T">The Type of State you want to request.</typeparam>
         public void RequestState<T>() where T : AbstractState<StateSubGroup>
         {
-            if (FindStateIndex<T>(out int index))
+            if (FindStoredState<T>(out var state))
             {
-                _requestedStateIndex = index;
+                _requestedState = state;
             }
             else
             {
@@ -149,20 +166,15 @@ namespace StateMachine
             }
         }
 
-        private bool FindStateIndex<T>(out int indexOfState) where T : AbstractState<StateSubGroup>
+        private bool FindStoredState<T>(out AbstractState<StateSubGroup> state) where T : AbstractState<StateSubGroup>
         {
-            // check, if state type is stored
-            for (int i = 0; i < _storedStates.Count; i++)
-            {
-                if (_storedStates[i].GetType() == typeof(T))
-                {
-                    indexOfState = i;
-                    return true;
-                }
-            }
+            state = _storedStates.Find((storedState) => storedState is T);
+            return state != null;
+        }
 
-            indexOfState = -1;
-            return false;
+        private bool FindStoredState<T>() where T : AbstractState<StateSubGroup>
+        {
+            return _storedStates.Find((storedState) => storedState is T) != null;
         }
     }
 

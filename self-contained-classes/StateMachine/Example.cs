@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Runtime.Serialization;
 
 namespace StateMachine
 {
     class Example
     {
-        private const int MAIN_LOOP_TICKS = 32;
+        private const int MAIN_LOOP_TICKS = 17;
         private const int SIDE_LOOP_TICKS = 5;
 
         static void Main()
@@ -19,10 +20,11 @@ namespace StateMachine
                 machine.Update();
             }
 
-            // requesting state switches from outside the StateMachine
+            // requesting state switches from outside the StateMachine;
             // after the above iterations, the machine would go on with state A,
             // so let's change it to B instead
             machine.RequestState<DemoStateB>();
+            Console.WriteLine("REQUESTED: B ========");
 
             // example update operation
             for (int i = 0; i < SIDE_LOOP_TICKS; i++)
@@ -30,9 +32,10 @@ namespace StateMachine
                 machine.Update();
             }
 
-            // other methods:
-            Console.WriteLine("CurrentState     = " + machine.CurrentState);
-            Console.WriteLine("StoredStateCount = " + machine.StoredStates.Count);
+            // example calls of other methods
+            Console.WriteLine("==================================");
+            Console.WriteLine("CurrentStateIs<DemoStateA> = " + machine.CurrentStateIs<DemoStateA>());
+            Console.WriteLine("HasStateStored<DemoStateB> = " + machine.HasStateStored<DemoStateB>());
         }
     }
 }
