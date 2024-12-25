@@ -2,13 +2,13 @@
 /* Code by Sebastian Stuhlberger                                             */
 /* ========================================================================= */
 
-namespace StateMachine
+namespace StateMachine.Example
 {
 
     // create concrete states that belong to a specific subgroup
-    class DemoStateB : AbstractState<DemoStateSubgroup>
+    class DemoStateA : AbstractState<DemoStateSubgroup>
     {
-        private const int COUNTER_THRESHOLD = 5;
+        private const int COUNTER_THRESHOLD = 3;
         private int _counter = 0;
 
         public override void OnEnter()
@@ -16,7 +16,7 @@ namespace StateMachine
             // ensure clean state when entering
             _counter = 0;
 
-            System.Console.WriteLine("EXHIBITING B ========");
+            System.Console.WriteLine("EXHIBITING A ========");
         }
 
         public override void OnExit()
@@ -26,14 +26,14 @@ namespace StateMachine
 
         public override void OnUpdate()
         {
-            System.Console.WriteLine("-------- State B Tick");
+            System.Console.WriteLine("-------- State A Tick");
 
             _counter++;
             if (_counter >= COUNTER_THRESHOLD)
             {
-                // request changing to another state
+                // request for changing a state
                 // this will be processed immediately before the next update
-                StateMachine.RequestState<DemoStateA>();
+                StateMachine.RequestState<DemoStateB>();
             }
         }
     }
