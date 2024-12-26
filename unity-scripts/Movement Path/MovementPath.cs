@@ -41,9 +41,9 @@ public class MovementPath
     {
         List<Transform> childTransforms = new();
 
-        // get the transforms of all immediate children of the _pathParentTransform
         foreach (Transform transform in _pathParentTransform)
         {
+            // store immediate children of the _pathParentTransform
             childTransforms.Add(transform);
         }
 
@@ -53,7 +53,6 @@ public class MovementPath
         _debugAvailableLocations.UpdateArrayPointer(_availableLocations);
 #endif
 
-        // validate, if the resulting transforms are enough to create a path
         ValidatePath();
     }
 
@@ -72,14 +71,16 @@ public class MovementPath
             return Vector3.zero;
         }
 
-        // initialize with the first stored location
+        // initialize 
         Vector3 closestLocation = _availableLocations[0].position;
         float closestDistance = Vector3.Distance(currentSelfPosition, closestLocation);
 
-        // check, if any of the remaining locations is closer and update closestLocation accordingly
+        // find closest location
         for (int locationIndex = 1; locationIndex < _availableLocations.Length; locationIndex++)
         {
-            float newDistance = Vector3.Distance(currentSelfPosition, _availableLocations[locationIndex].position);
+            float newDistance = Vector3.Distance(
+                currentSelfPosition, _availableLocations[locationIndex].position
+            );
 
             if (newDistance < closestDistance)
             {
@@ -92,6 +93,10 @@ public class MovementPath
         return closestLocation;
     }
 
+    /// <summary>
+    /// Returns the next target location, based on the mode of traversal,
+    /// assuming the most recent target location was already reached.
+    /// </summary>
     public Vector3 GetNextLocation()
     {
         int targetIndex;
@@ -128,19 +133,16 @@ public class MovementPath
         }
 
         _lastTargetLocationIndex = targetIndex;
-
         return _availableLocations[targetIndex].position;
     }
 
     private bool ValidatePath()
     {
-        // check, if there are at least 2 locations available for creating a traversable path
         if (_availableLocations == null || _availableLocations.Length < 2)
         {
             Debug.LogError("MovementPath: No valid path available.");
             return false;
         }
-
         return true;
     }
 }
