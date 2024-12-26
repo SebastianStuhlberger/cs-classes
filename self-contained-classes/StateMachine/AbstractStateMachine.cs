@@ -19,7 +19,7 @@ namespace StateMachine
         private List<AbstractState<StateSubGroup>> _storedStates = new();
 
         private AbstractState<StateSubGroup> _currentState;
-        private AbstractState<StateSubGroup> _requestedState = null;
+        private AbstractState<StateSubGroup>? _requestedState = null;
 
         private bool IsStateChangeRequested { get => _requestedState != null; }
         private bool StateChangeRequestIsRedundant { get => _requestedState == _currentState; }

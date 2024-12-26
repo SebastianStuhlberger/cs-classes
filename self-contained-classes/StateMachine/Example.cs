@@ -12,7 +12,6 @@ namespace StateMachine
         {
             // constructors can definitely get more complex than this
             DemoStateMachine machine = new();
-            machine.Initialize();
 
             // example update operation
             for (int i = 0; i < MAIN_LOOP_TICKS; i++)
