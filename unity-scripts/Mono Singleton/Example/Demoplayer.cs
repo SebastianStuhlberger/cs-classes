@@ -7,16 +7,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// ############################################################################
+// ============================================================================
 // EXAMPLE FILES for MonoSingleton class usage:
 //    Demoplayer.cs
 //    DemoplayerMS.cs
 //    ReferToMonoSingletonFromOtherClass.cs
 
-// INFO:
-// This class is just an example for a Component.
-// It is wrapped by a MonoSingleton in DemoPlayerMS.cs
-
+/// <summary>
+/// An example component to later be wrapped by a MonoSingleton.
+/// </summary>
 public class Demoplayer : MonoBehaviour
 {
     public Transform headTransform;

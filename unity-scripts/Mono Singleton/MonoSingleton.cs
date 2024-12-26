@@ -10,19 +10,19 @@ using UnityEngine;
 /// <summary>
 /// Use this class as a generic wrapper that turns any Component into a Singleton, making it
 /// easily accessible within your scene. To do so, derive from this base class and place
-/// an instance of the derived class on the same game-object as the to be wrapped Component.
+/// an Instance of the derived class on the same game-object as the to be wrapped Component.
+/// Use [RequireComponent] in deriving classes to guarantee the availability of an Instance.
 /// </summary>
 /// <typeparam name="T">The Type of the Component that should be wrapped by the deriving class</typeparam>
 public abstract class MonoSingleton<T> : MonoBehaviour where T : Component
 {
-    // note that this does not throw a dedicated error, if the instance is null,
-    // since this case is already covered during initialization below
+    // the instance only has a dedicated null-check during initialization
     public static T Instance { get; private set; }
 
     /// <summary>
-    /// It is generally not recommended to override the MonoSingleton.Awake() method in child classes.
-    /// Try to instead move Awake() functionality to Instance.Awake(), if possible. If not,
-    /// always call "base.Awake()" first when overriding this, or the Singleton functionality will break.
+    /// It is strongly disadvised to override the MonoSingleton.Awake() method in child classes.
+    /// Try to instead move Awake() functionality to the Instance.Awake(), if possible.
+    /// When overriding, call "base.Awake()" before trying to access the Instance.
     /// </summary>
     protected virtual void Awake()
     {

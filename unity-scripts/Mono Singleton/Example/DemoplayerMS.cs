@@ -7,24 +7,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// ############################################################################
+// ============================================================================
 // EXAMPLE FILES for MonoSingleton class usage:
 //    Demoplayer.cs
 //    DemoplayerMS.cs
 //    ReferToMonoSingletonFromOtherClass.cs
 
-// INFO:
-// Since the MonoSingleton is a wrapper, make sure that it always has acces to the necessary Component,
-// by using the [RequireComponent] attribute in front of the derived MonoSingleton class.
-// Like this, a MonoSingleton cannot exist on a game-object without the class it is meant to wrap.
+// Since the MonoSingleton is a wrapper, make sure that it always has acces to the necessary Component
+// by using the [RequireComponent] attribute for the derived MonoSingleton class.
 
 [RequireComponent(typeof(Demoplayer))]
 public class DemoplayerMS : MonoSingleton<Demoplayer>
 {
-    // INFO:
     // MonoSingletons should be used as a global wrapper for a designated Component.
-    // In the derived MonoSingleton, you can then create static Methods/Properties that use the Instance,
-    // as shown with the 3 examples below.
+    // In the derived MonoSingleton you can then create static Methods/Properties
+    // that use the Instance, as shown below.
 
     public static Transform Head
     {
@@ -38,8 +35,10 @@ public class DemoplayerMS : MonoSingleton<Demoplayer>
         set { Instance.fingerCount = value; }
     }
 
-    // note that functionalities like this (assuming they are more meaningful)
-    // should ideally be moved into the Instance class
+    // Functionalities like this (assuming they are more meaningful)
+    // should typically be moved into the Instance class.
+    // Keep separation of concerns in mind, when adding ANY funcitonality here.
+    // MonoSingletons should be purely focused on being a component-wrapper.
     public static void PerformCrazyBackflip(bool backflipGoesWrong)
     {
         Instance.DoBackflip();
@@ -51,34 +50,33 @@ public class DemoplayerMS : MonoSingleton<Demoplayer>
         }
     }
 
-    // INFO:
-    // EVERYTHING BELOW THIS POINT IS NOT RECOMMENDED, AND SHOULD ONLY BE USED,
+    // EVERYTHING BELOW THIS POINT IS STRONGLY DISADVISED, AND SHOULD ONLY BE USED,
     // IF THERE IS NO ALTERNATIVE WAY TO ACHIEVE A CERTAIN BEHAVIOUR
 
     protected override void Awake()
     {
-        // Insert any custom Awake() behaviour here, if wanted.
         // Make sure to always call base.Awake() beforehand!
         base.Awake();
 
-        // THIS Awake() SHOULD ONLY MODIFY THIS(!) CLASS OBJECT AND NOT THE INSTACE!!
+        // Insert any custom Awake() behaviour here, if wanted.
+        // Separation of concerns is the definitive guiding principle here.
+        // THIS Awake() should only modify THIS(!) class object and NOT the Instance!
 
-        // THE FOLLOWING LINE OF THIS COMMENT BLOCK IS THEREFORE AN ABSOLUTE NO-GO!!
+        // THE FOLLOWING LINE OF THIS COMMENT BLOCK IS THEREFORE AN ABSOLUTE NO-GO!
         // Instance.fingerCount = 10; 
         // Awake() should NOT modifiy the Instance.
-        // Move code like that to Instance.Awake()
+        // Move code like this to Instance.Awake()
 
-        // On the other hand, code like this is allowed,
-        // as the Instance is unaffected by it.
+        // On the other hand, code like this is acceptable, if absolutely necessary,
+        // as the Instance stays unaffected by it.
         if (Camera.main != null)
         {
             hasCamera = true;
         }
     }
 
-    // INFO:
-    // MonoSingletons can technically hold their own members, but as established,
-    // it is recommended to use MonoSingletons just as a wrapper for .Instance
+    // MonoSingletons can technically hold their own members, but as established, it is
+    // strongly recommended to just use MonoSingletons just as a wrapper for .Instance
 
     public static bool hasCamera = false;
 }
