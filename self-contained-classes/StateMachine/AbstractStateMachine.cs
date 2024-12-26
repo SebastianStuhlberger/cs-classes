@@ -5,8 +5,8 @@
 namespace StateMachine;
 
 /// <summary>
-/// This abstract StateMachine is designed for handling systems with multiple states in games.
-/// It operates based on C# types instead of enums or state-objects.
+/// This abstract StateMachine is designed for handling systems with multiple states
+/// in games by using C# types to refer to said states.
 /// </summary>
 /// <typeparam name="StateSubGroup">The subgroup class for a StateMachine and its related States.
 /// Use these subgroups to group states that belong together.</typeparam>
@@ -92,7 +92,6 @@ public abstract class AbstractStateMachine<StateSubGroup> where StateSubGroup : 
     {
         if (IsStateChangeRequested)
         {
-            ThrowIfUnInitialized();
             if (StateChangeRequestIsRedundant)
             {
                 _requestedState = null;
@@ -115,7 +114,7 @@ public abstract class AbstractStateMachine<StateSubGroup> where StateSubGroup : 
     {
         if (FindStoredState<T>())
         {
-            throw new InvalidOperationException($"The State \"{nameof(T)}\" is already stored, duplicate cannot be added.");
+            throw new InvalidOperationException($"The State \"{NameOfState<T>()}\" is already stored, duplicate cannot be added.");
         }
 
         var newState = new T();
@@ -135,7 +134,7 @@ public abstract class AbstractStateMachine<StateSubGroup> where StateSubGroup : 
     {
         if (FindStoredState<T>(out var storedState))
         {
-            throw new InvalidOperationException($"The State \"{nameof(T)}\" is already stored, duplicate cannot be added.");
+            throw new InvalidOperationException($"The State \"{NameOfState<T>()}\" is already stored, duplicate cannot be added.");
         }
 
         // Inform the State, which StateMachine it belongs to.
@@ -153,7 +152,7 @@ public abstract class AbstractStateMachine<StateSubGroup> where StateSubGroup : 
         }
         else
         {
-            throw new InvalidOperationException($"The State \"{nameof(T)}\" was requested for removal, but is not stored in this StateMachine.");
+            throw new InvalidOperationException($"The State \"{NameOfState<T>()}\" was requested for removal, but is not stored in this StateMachine.");
         }
     }
 
@@ -170,7 +169,7 @@ public abstract class AbstractStateMachine<StateSubGroup> where StateSubGroup : 
         }
         else
         {
-            throw new InvalidOperationException($"A change to State \"{nameof(T)}\" was requested, but the State is not stored in this StateMachine.");
+            throw new InvalidOperationException($"A change to State \"{NameOfState<T>()}\" was requested, but the State is not stored in this StateMachine.");
         }
     }
 
@@ -183,5 +182,10 @@ public abstract class AbstractStateMachine<StateSubGroup> where StateSubGroup : 
     private bool FindStoredState<T>() where T : AbstractState<StateSubGroup>
     {
         return _storedStates.Find((storedState) => storedState is T) != null;
+    }
+
+    private string NameOfState<T>() where T : AbstractState<StateSubGroup>
+    {
+        return typeof(T).Name;
     }
 }

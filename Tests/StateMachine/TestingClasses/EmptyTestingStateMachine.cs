@@ -17,4 +17,14 @@ internal sealed class EmptyTestingStateMachine : AbstractStateMachine<DemoStateS
     {
         base.AddState<T>();
     }
+
+    public new void AddState<T>(T state) where T : AbstractState<DemoStateSubgroup>
+    {
+        base.AddState<T>(state);
+    }
+
+    public new void RemoveState<T>() where T : AbstractState<DemoStateSubgroup>
+    {
+        base.RemoveState<T>();
+    }
 }
