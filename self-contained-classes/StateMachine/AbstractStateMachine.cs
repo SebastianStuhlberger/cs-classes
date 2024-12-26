@@ -14,7 +14,7 @@ public abstract class AbstractStateMachine<StateSubGroup> where StateSubGroup : 
 {
     private List<AbstractState<StateSubGroup>> _storedStates = new();
 
-    private AbstractState<StateSubGroup> _currentState;
+    private AbstractState<StateSubGroup> _currentState = null;
     private AbstractState<StateSubGroup> _requestedState = null;
 
     private bool IsStateChangeRequested { get => _requestedState != null; }
@@ -27,6 +27,7 @@ public abstract class AbstractStateMachine<StateSubGroup> where StateSubGroup : 
     /// <returns>True, if the current state is of the specified type.</returns>
     public bool CurrentStateIs<T>() where T : AbstractState<StateSubGroup>
     {
+        ThrowIfUnInitialized();
         return _currentState is T;
     }
 
@@ -41,33 +42,20 @@ public abstract class AbstractStateMachine<StateSubGroup> where StateSubGroup : 
     }
 
     /// <summary>
-    /// Call this method once every frame to trigger the concrete update-behaviour of the current state,
-    /// and to to apply any requested state-switches after said update.
-    /// </summary>
-    public void Update()
-    {
-        // switch to another state, if it was requested last frame
-        HandleStateRequests();
-
-        // exhibit state-specific update behaviour
-        _currentState.OnUpdate();
-    }
-
-    /// <summary>
     /// Call this method to ready the StateMachine for operation and
     /// enter its initial state.
     /// </summary>
     public void Initialize()
     {
-        ValidateDefaultStates();
+        ValidateInitialStoredStates();
         SetInitialState();
     }
 
-    private void ValidateDefaultStates()
+    private void ValidateInitialStoredStates()
     {
         if (_storedStates.Count < 1)
         {
-            throw new Exception("ConcreteStateMachine does not add any default states in its constructor");
+            throw new InvalidOperationException("StateMachine initialization failed: ConcreteStateMachine does not contain any states.");
         }
     }
 
@@ -77,10 +65,34 @@ public abstract class AbstractStateMachine<StateSubGroup> where StateSubGroup : 
         _currentState.OnEnter();
     }
 
+    private void ThrowIfUnInitialized()
+    {
+        if (_currentState == null)
+        {
+            throw new InvalidOperationException("StateMachine was not properly initialized. CurrentState is not available.");
+        }
+    }
+
+    /// <summary>
+    /// Call this method once every frame to apply any requested state-switches and
+    /// to then trigger the concrete update-behaviour of the current state.
+    /// </summary>
+    public void Update()
+    {
+        ThrowIfUnInitialized();
+
+        // switch to another state, if it was requested last frame
+        HandleStateRequests();
+
+        // exhibit state-specific update behaviour
+        _currentState.OnUpdate();
+    }
+
     private void HandleStateRequests()
     {
         if (IsStateChangeRequested)
         {
+            ThrowIfUnInitialized();
             if (StateChangeRequestIsRedundant)
             {
                 _requestedState = null;
@@ -103,7 +115,7 @@ public abstract class AbstractStateMachine<StateSubGroup> where StateSubGroup : 
     {
         if (FindStoredState<T>())
         {
-            throw new Exception("State type already stored, cannot add another.");
+            throw new InvalidOperationException($"The State \"{nameof(T)}\" is already stored, duplicate cannot be added.");
         }
 
         var newState = new T();
@@ -123,7 +135,7 @@ public abstract class AbstractStateMachine<StateSubGroup> where StateSubGroup : 
     {
         if (FindStoredState<T>(out var storedState))
         {
-            throw new Exception("State type already stored, cannot add another.");
+            throw new InvalidOperationException($"The State \"{nameof(T)}\" is already stored, duplicate cannot be added.");
         }
 
         // Inform the State, which StateMachine it belongs to.
@@ -141,7 +153,7 @@ public abstract class AbstractStateMachine<StateSubGroup> where StateSubGroup : 
         }
         else
         {
-            throw new Exception("The State that was requested for removal was not found.");
+            throw new InvalidOperationException($"The State \"{nameof(T)}\" was requested for removal, but is not stored in this StateMachine.");
         }
     }
 
@@ -158,7 +170,7 @@ public abstract class AbstractStateMachine<StateSubGroup> where StateSubGroup : 
         }
         else
         {
-            throw new Exception("The State to which a change was requested was not found.");
+            throw new InvalidOperationException($"A change to State \"{nameof(T)}\" was requested, but the State is not stored in this StateMachine.");
         }
     }
 
