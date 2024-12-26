@@ -2,7 +2,7 @@
 /* Code by Sebastian Stuhlberger                                             */
 /* ========================================================================= */
 
-namespace StateMachine.Example
+namespace StateMachine
 {
 
     // declare a subgroup for states and their StateMachine

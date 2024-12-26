@@ -1,6 +1,7 @@
 ﻿using System;
+using System.Runtime.Serialization;
 
-namespace StateMachine.Example
+namespace StateMachine
 {
     class Example
     {
