@@ -1,4 +1,6 @@
-﻿namespace StateMachine
+﻿using StateMachine.ExampleClasses;
+
+namespace StateMachine
 {
     class Example
     {

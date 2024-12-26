@@ -2,7 +2,7 @@
 /* Code by Sebastian Stuhlberger                                             */
 /* ========================================================================= */
 
-namespace StateMachine
+namespace StateMachine.ExampleClasses
 {
 
     // create concrete states that belong to a specific subgroup

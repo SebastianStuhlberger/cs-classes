@@ -1,4 +1,5 @@
 using StateMachine;
+using StateMachine.ExampleClasses;
 
 namespace Tests;
 
