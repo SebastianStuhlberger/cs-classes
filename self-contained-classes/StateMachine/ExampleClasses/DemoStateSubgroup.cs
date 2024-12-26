@@ -6,6 +6,6 @@ namespace StateMachine
 {
 
     // declare a subgroup for states and their StateMachine
-    class DemoStateSubgroup : AbstractStateSubgroup { }
+    public class DemoStateSubgroup : AbstractStateSubgroup { }
 
 }

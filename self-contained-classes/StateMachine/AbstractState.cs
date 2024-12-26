@@ -2,8 +2,6 @@
 /* Code by Sebastian Stuhlberger                                             */
 /* ========================================================================= */
 
-using System;
-
 namespace StateMachine
 {
 
@@ -11,7 +9,7 @@ namespace StateMachine
     /// Derive from this class to create a new State to insert into a StateMachine.
     /// </summary>
     /// <typeparam name="StateSubGroup">The subgroup for the target StateMachine and all its states</typeparam>
-    abstract class AbstractState<StateSubGroup> where StateSubGroup : AbstractStateSubgroup
+    public abstract class AbstractState<StateSubGroup> where StateSubGroup : AbstractStateSubgroup
     {
         /// <summary>
         /// A reference to the StateMachine that currently manages the instance of the state.

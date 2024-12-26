@@ -6,7 +6,7 @@ namespace StateMachine
 {
 
     // the StateMachine for the given subgroup
-    class DemoStateMachine : AbstractStateMachine<DemoStateSubgroup>
+    public class DemoStateMachine : AbstractStateMachine<DemoStateSubgroup>
     {
         public DemoStateMachine()
         {

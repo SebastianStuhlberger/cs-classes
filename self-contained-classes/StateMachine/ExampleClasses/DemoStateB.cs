@@ -6,7 +6,7 @@ namespace StateMachine
 {
 
     // create concrete states that belong to a specific subgroup
-    class DemoStateB : AbstractState<DemoStateSubgroup>
+    public class DemoStateB : AbstractState<DemoStateSubgroup>
     {
         private const int COUNTER_THRESHOLD = 5;
         private int _counter = 0;

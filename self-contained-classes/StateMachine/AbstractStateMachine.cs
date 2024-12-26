@@ -2,9 +2,6 @@
 /* Code by Sebastian Stuhlberger                                             */
 /* ========================================================================= */
 
-using System;
-using System.Collections.Generic;
-
 namespace StateMachine
 {
 
@@ -14,7 +11,7 @@ namespace StateMachine
     /// </summary>
     /// <typeparam name="StateSubGroup">The subgroup class for a StateMachine and its related States.
     /// Use these subgroups to group states that belong together.</typeparam>
-    abstract class AbstractStateMachine<StateSubGroup> where StateSubGroup : AbstractStateSubgroup
+    public abstract class AbstractStateMachine<StateSubGroup> where StateSubGroup : AbstractStateSubgroup
     {
         private List<AbstractState<StateSubGroup>> _storedStates = new();
 
