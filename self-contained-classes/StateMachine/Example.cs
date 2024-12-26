@@ -1,4 +1,8 @@
-﻿using StateMachine.ExampleClasses;
+﻿/* ========================================================================= */
+/* Code by Sebastian Stuhlberger                                             */
+/* ========================================================================= */
+
+using StateMachine.ExampleClasses;
 
 namespace StateMachine
 {
