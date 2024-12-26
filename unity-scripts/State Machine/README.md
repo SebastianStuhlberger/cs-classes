@@ -8,4 +8,4 @@ This allows for clean method calls like `stateMachine.ChangeState<NewTargetState
 
 Some functionality found in this version has by now been refactored for the generic version of this StateMachine.
 
-Check the [self-contained-classes directory](https://github.com/SebastianStuhlberger/cs-classes/tree/main/self-contained-classes) for the up-to-date and tested version.
+Check the [self-contained-classes directory](https://github.com/SebastianStuhlberger/cs-classes/blob/main/self-contained-classes/StateMachine) for the up-to-date and tested version.
