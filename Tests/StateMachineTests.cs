@@ -10,8 +10,18 @@ namespace Tests;
 public class StateMachineTests
 {
     [Fact]
-    public void Test1()
+    public void Initialize_WhenCalled_SetsUpDefaultState()
     {
-        DemoStateMachine test = new();
+        // Arrange
+        EmptyTestingStateMachine testMachine = new();
+        testMachine.AddState<DemoStateB>();
+        testMachine.AddState<DemoStateA>();
+
+        // Act
+        testMachine.Initialize();
+
+        // Assert
+        Assert.False(testMachine.CurrentStateIs<DemoStateA>());
+        Assert.True(testMachine.CurrentStateIs<DemoStateB>());
     }
 }
