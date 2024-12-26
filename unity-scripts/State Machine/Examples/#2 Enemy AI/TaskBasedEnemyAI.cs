@@ -48,7 +48,8 @@ public class TaskBasedEnemyAI : AbstractEnemyAI
 }
 
 /// <summary>
-/// The base state for all states for task-based enemies
+/// The base state for all states for task-based enemies.
+/// Use "TaskAI." to access public members of "TaskBasedEnemyAI" like "enemySettings"
 /// </summary>
 public abstract class TaskEnemy_AbstractState : AbstractEnemyAIState
 {
@@ -170,12 +171,16 @@ public class TaskEnemy_FollowTaskState : TaskEnemy_AbstractState
 
         // if awareness hits investigate threshold: switch to investigate player state;
         // this can be triggered entirely through high global awareness.
-        if (TaskAI.awareness >= TaskAI.awarenessSettings.investigateAwarenessThreshold)
+
+        bool shouldInvestigatePlayerByAwareness = TaskAI.awareness >= TaskAI.awarenessSettings.investigateAwarenessThreshold;
+        if (shouldInvestigatePlayerByAwareness)
         {
-            // additionally check if the last seen player position is within possible range
-            if (Vector3.Distance(TaskAI.lastSeenPlayerPosition, TaskAI.transform.position) <= TaskAI.awarenessSettings.investigateDistanceThreshold)
+            var playerDistance = Vector3.Distance(TaskAI.lastSeenPlayerPosition, TaskAI.transform.position);
+            bool playerIsInRange = playerDistance <= TaskAI.awarenessSettings.investigateDistanceThreshold;
+            if (playerIsInRange)
             {
-                if (!TaskAI.playerIsSafe)
+                bool playerIsVulnerable = !TaskAI.playerIsSafe;
+                if (playerIsVulnerable)
                 {
                     AI.ChangeState<TaskEnemy_InvestigateLocation>();
                 }
@@ -228,6 +233,6 @@ public class TaskEnemy_ChasePlayerState : TaskEnemy_AbstractState
 
 public class TaskEnemy_InvestigateLocation : TaskEnemy_AbstractState
 {
-   // code by other team members
-   // this section was not programmed by me
+    // code by other team members
+    // this section was not programmed by me
 }

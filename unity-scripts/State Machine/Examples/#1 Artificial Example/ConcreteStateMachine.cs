@@ -7,7 +7,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// INFO:
 // create a subgroup for the current state machine and its states, in order to group them
 public class ConcreteStateSubgroup : AbstractStateSubgroup { }
 
@@ -15,7 +14,6 @@ public class ConcreteStateMachine : AbstractStateMachine<ConcreteStateSubgroup>
 {
     [SerializeField] private FloatReference fillThisFieldInEditor;
 
-    // INFO:
     // Override "AddDefaultStates()" like below and add your concrete states.
     // Ideally, all your states are independant
 

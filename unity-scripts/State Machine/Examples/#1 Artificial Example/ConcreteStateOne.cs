@@ -7,7 +7,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// INFO:
 // This is an empty example of how any basic concrete state is set up.
 
 public class ConcreteStateOne : AbstractState<ConcreteStateSubgroup>

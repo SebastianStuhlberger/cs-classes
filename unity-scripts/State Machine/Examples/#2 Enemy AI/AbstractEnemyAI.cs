@@ -48,20 +48,29 @@ public abstract class AbstractEnemyAI : AbstractStateMachine<EnemyAI>
     public AwarenessSettings awarenessSettings => _awarenessSettings;
     public float globalAwareness => _globalAwareness.Value;
     public float selfAwareness { get; protected set; } = 0;
-    public float awareness
-    {
-        get { return selfAwareness + _globalAwareness.Value; }
-    }
+    public float awareness { get { return selfAwareness + _globalAwareness.Value; } }
 
     // -----------------------------------------------------
     // -----------------------------------------------------
     // Player distance tracking
 
-    private float _distanceToPlayer { get => Vector3.Distance(gameObject.transform.position, PlayerHandle.position); }
+    private float _distanceToPlayer
+    {
+        get => Vector3.Distance(gameObject.transform.position, PlayerHandle.position);
+    }
 
     // This factor can be used to access a value in range (0.0, 1.0) that expresses if the player
     // is nearby or far away. A high value means the player is close.
-    private float _distanceToPlayerMultiplicator { get => _distanceToPlayerCurve.Evaluate(Mathf.Max(0.0f, 1.0f - _distanceToPlayer / _awarenessSettings.maximumTrackDistance)); }
+    private float _distanceToPlayerMultiplicator
+    {
+        get
+        {
+            var playerDistanceFactor = _distanceToPlayer / _awarenessSettings.maximumTrackDistance;
+            return _distanceToPlayerCurve.Evaluate(
+                Mathf.Max(0.0f, 1.0f - playerDistanceFactor)
+            );
+        }
+    }
 
     // -----------------------------------------------------
     // -----------------------------------------------------
@@ -99,7 +108,6 @@ public abstract class AbstractEnemyAI : AbstractStateMachine<EnemyAI>
         {
             transform.position = initialPosition;
         }
-
         transform.rotation = initialRotation;
     }
 
