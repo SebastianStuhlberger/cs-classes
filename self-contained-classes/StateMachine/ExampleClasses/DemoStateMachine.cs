@@ -5,7 +5,7 @@
 namespace StateMachine.ExampleClasses
 {
 
-    // the StateMachine for the given subgroup
+    // a StateMachine using a given subgroup of states
     public class DemoStateMachine : AbstractStateMachine<DemoStateSubgroup>
     {
         public DemoStateMachine()
