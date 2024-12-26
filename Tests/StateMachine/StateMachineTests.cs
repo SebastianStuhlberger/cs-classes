@@ -2,10 +2,10 @@
 /* Code by Sebastian Stuhlberger                                             */
 /* ========================================================================= */
 
-using StateMachine;
 using StateMachine.ExampleClasses;
+using Tests.StateMachine.TestingClasses;
 
-namespace Tests;
+namespace Tests.StateMachine;
 
 public class StateMachineTests
 {
@@ -21,7 +21,7 @@ public class StateMachineTests
         testMachine.Initialize();
 
         // Assert
-        Assert.False(testMachine.CurrentStateIs<DemoStateA>());
         Assert.True(testMachine.CurrentStateIs<DemoStateB>());
+        Assert.False(testMachine.CurrentStateIs<DemoStateA>());
     }
 }

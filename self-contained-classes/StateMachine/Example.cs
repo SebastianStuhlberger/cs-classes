@@ -13,30 +13,38 @@ class Example
 
     static void Main()
     {
-        // constructors can definitely get more complex than this
-        DemoStateMachine machine = new();
-
-        // example update operation
-        for (int i = 0; i < MAIN_LOOP_TICKS; i++)
+        try
         {
-            machine.Update();
+            // constructors can definitely get more complex than this
+            DemoStateMachine machine = new();
+
+            // example update operation
+            for (int i = 0; i < MAIN_LOOP_TICKS; i++)
+            {
+                machine.Update();
+            }
+
+            // requesting state switches from outside the StateMachine;
+            // after the above iterations, the machine would go on with state A,
+            // so let's change it to B instead
+            machine.RequestState<DemoStateB>();
+            Console.WriteLine("REQUESTED: B ========");
+
+            // example update operation
+            for (int i = 0; i < SIDE_LOOP_TICKS; i++)
+            {
+                machine.Update();
+            }
+
+            // example calls of other methods
+            Console.WriteLine("==================================");
+            Console.WriteLine("CurrentStateIs<DemoStateA> = " + machine.CurrentStateIs<DemoStateA>());
+            Console.WriteLine("HasStateStored<DemoStateB> = " + machine.HasStateStored<DemoStateB>());
         }
-
-        // requesting state switches from outside the StateMachine;
-        // after the above iterations, the machine would go on with state A,
-        // so let's change it to B instead
-        machine.RequestState<DemoStateB>();
-        Console.WriteLine("REQUESTED: B ========");
-
-        // example update operation
-        for (int i = 0; i < SIDE_LOOP_TICKS; i++)
+        catch (Exception exception)
         {
-            machine.Update();
+            Console.WriteLine($"EXCEPTION OCCURED: {exception.Message}");
+            Console.WriteLine($"STACK TRACE: {exception.StackTrace}");
         }
-
-        // example calls of other methods
-        Console.WriteLine("==================================");
-        Console.WriteLine("CurrentStateIs<DemoStateA> = " + machine.CurrentStateIs<DemoStateA>());
-        Console.WriteLine("HasStateStored<DemoStateB> = " + machine.HasStateStored<DemoStateB>());
     }
 }
