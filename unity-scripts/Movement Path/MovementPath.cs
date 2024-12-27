@@ -37,14 +37,15 @@ public class MovementPath
     // this bool tracks the movement direction during the BackAndForth traversal mode
     private bool _currentlyMovingForward = true;
 
+    // TODO: use Linq for enumerable operations
     private void LoadPath()
     {
         List<Transform> childTransforms = new();
 
-        foreach (Transform transform in _pathParentTransform)
+        foreach (Transform childTransform in _pathParentTransform)
         {
             // store immediate children of the _pathParentTransform
-            childTransforms.Add(transform);
+            childTransforms.Add(childTransform);
         }
 
         _availableLocations = childTransforms.ToArray();
