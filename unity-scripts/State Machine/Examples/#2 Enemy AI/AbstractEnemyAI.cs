@@ -79,7 +79,6 @@ public abstract class AbstractEnemyAI : AbstractStateMachine<EnemyAI>
     public override void Awake()
     {
         base.Awake();
-
         initialPosition = transform.position;
         initialRotation = transform.rotation;
     }
@@ -87,14 +86,12 @@ public abstract class AbstractEnemyAI : AbstractStateMachine<EnemyAI>
     protected override void OnEnable()
     {
         base.OnEnable();
-
         selfAwareness = 0;
     }
 
     protected override void OnDisable()
     {
         base.OnDisable();
-
         selfAwareness = 0;
     }
 
