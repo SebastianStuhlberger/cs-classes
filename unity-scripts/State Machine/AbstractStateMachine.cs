@@ -19,6 +19,9 @@ public abstract class AbstractStateMachine<StateSubGroup> : MonoBehaviour where 
 
     private AbstractState<StateSubGroup> _currentState;
 
+    // TODO: Align management of requested states with self-contained StateMachine:
+    // replace _requestedStateIndex with a nullable _requestedState field
+
     // note that a value of "-1" means "no new state requested"
     // this could be replaced by a bool, if so desired
     private int _requestedStateIndex = -1;
@@ -82,6 +85,7 @@ public abstract class AbstractStateMachine<StateSubGroup> : MonoBehaviour where 
     {
         if (FindStateIndex<T>(out int index))
         {
+            // TODO: Add the type of the state causing the warning to the message.
             Debug.LogWarning("State type already stored, cannot add another.", this);
             return;
         }
@@ -102,6 +106,7 @@ public abstract class AbstractStateMachine<StateSubGroup> : MonoBehaviour where 
     {
         if (FindStateIndex<T>(out int index))
         {
+            // TODO: Add the type of the state causing the warning to the message.
             Debug.LogWarning("State type already stored, cannot add another.", this);
             return;
         }
@@ -120,6 +125,7 @@ public abstract class AbstractStateMachine<StateSubGroup> : MonoBehaviour where 
         }
         else
         {
+            // TODO: Add the type of the state causing the warning to the message.
             Debug.LogWarning("The State that was requested for removal was not found.", this);
             return;
         }
@@ -138,11 +144,13 @@ public abstract class AbstractStateMachine<StateSubGroup> : MonoBehaviour where 
         }
         else
         {
+            // TODO: Add the type of the state causing the warning to the message.
             Debug.LogWarning("The State to which a change was requested was not found.", this);
             return;
         }
     }
 
+    // TODO: Align with self-contained StateMachine: FindStoredState<T>(out state)
     private bool FindStateIndex<T>(out int indexOfState) where T : AbstractState<StateSubGroup>
     {
         // check, if state type is stored

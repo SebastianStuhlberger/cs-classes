@@ -30,6 +30,7 @@ public abstract class AbstractEnemyAI : AbstractStateMachine<EnemyAI>
     // -----------------------------------------------------
     // Externally available player-data
 
+    // TODO: use PascalCase for props
     public Vector3 lastSeenPlayerPosition => _lastSeenPlayerPosition.Value;
     public bool playerIsSafe => _isInActiveSafeHavenZone.Value;
 
@@ -37,6 +38,7 @@ public abstract class AbstractEnemyAI : AbstractStateMachine<EnemyAI>
     // -----------------------------------------------------
     // Enemy positioning data
 
+    // TODO: use PascalCase for props
     public bool isStationary { get; protected set; } = false;
     public Vector3 initialPosition { get; private set; }
     public Quaternion initialRotation { get; private set; }
@@ -45,6 +47,7 @@ public abstract class AbstractEnemyAI : AbstractStateMachine<EnemyAI>
     // -----------------------------------------------------
     // Awareness management
 
+    // TODO: use PascalCase for props
     public AwarenessSettings awarenessSettings => _awarenessSettings;
     public float globalAwareness => _globalAwareness.Value;
     public float selfAwareness { get; protected set; } = 0;
@@ -54,6 +57,7 @@ public abstract class AbstractEnemyAI : AbstractStateMachine<EnemyAI>
     // -----------------------------------------------------
     // Player distance tracking
 
+    // TODO: use PascalCase for props
     private float _distanceToPlayer
     {
         get => Vector3.Distance(gameObject.transform.position, PlayerHandle.position);
@@ -115,14 +119,22 @@ public abstract class AbstractEnemyAI : AbstractStateMachine<EnemyAI>
             value *= _distanceToPlayerMultiplicator;
 
             // make sure that self awareness can only be filled up to max value
-            float realSelfAwarenessValueToBeApplied = Mathf.Min(value, _awarenessSettings.selfAwarenessMaximum - selfAwareness);
-            selfAwareness += realSelfAwarenessValueToBeApplied;
+            float maximumApplicableAwareness = _awarenessSettings.selfAwarenessMaximum - selfAwareness;
+            float clampedSelfAwarenessToBeApplied = Mathf.Min(
+                value,
+                maximumApplicableAwareness
+            );
+            selfAwareness += clampedSelfAwarenessToBeApplied;
 
             // make sure that global awareness can only be filled up to max value
             // only transfer a portion of the selfAwareness to the globalAwareness
+            float maximumApplicableGlobalAwareness = _awarenessSettings.globalAwarenessMaximum - globalAwareness;
             float scaledGlobalAwareness = value * _awarenessSettings.globalAwarenessTransferPercentage;
-            float realGlobalAwarenessValueToBeApplied = Mathf.Min(scaledGlobalAwareness, _awarenessSettings.globalAwarenessMaximum - globalAwareness);
-            _globalAwareness.ChangeBy(realGlobalAwarenessValueToBeApplied);
+            float clampedGlobalAwarenessToBeApplied = Mathf.Min(
+                scaledGlobalAwareness,
+                maximumApplicableGlobalAwareness
+            );
+            _globalAwareness.ChangeBy(clampedGlobalAwarenessToBeApplied);
         }
 
         else if (value < 0)
